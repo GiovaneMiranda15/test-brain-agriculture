@@ -7,11 +7,11 @@ CREATE TABLE produtor (
     estado VARCHAR(2) NOT NULL,
     area_total DECIMAL(10, 2) NOT NULL,
     area_agricultavel DECIMAL(10, 2) NOT NULL,
-    area_vegetacao DECIMAL(10, 2) NOT NULL,
-)
+    area_vegetacao DECIMAL(10, 2) NOT NULL
+);
 
 CREATE TABLE cultura (
-    id SERIAL PRIMARY KEY
+    id SERIAL PRIMARY KEY,
     produtor_id INTEGER,
     cultura VARCHAR(100) NOT NULL,
     area DECIMAL(10, 2) NOT NULL,
