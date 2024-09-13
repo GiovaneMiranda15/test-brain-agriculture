@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models.produtor import Produtor, Cultura, db
-from utils.validation import validar_dados
+from utils.validate import valida_dados
 
 # Define o Blueprint para as rotas de Produtor
 produtor_bp = Blueprint('produtor', __name__, url_prefix='/produtor')
@@ -31,16 +31,22 @@ def adicionar():
                 area=cultura_data['area']
             )
             produtor.culturas.append(cultura)
-        
+            
+        # Verifica se a soma das áreas das culturas não excede a área agricultável
+        area_total_culturas = sum(cultura_data['area'] for cultura_data in data['culturas'])
+
+        if area_total_culturas > data['area_agricultavel']:
+            raise ValueError("A soma das áreas das culturas não pode exceder a área agricultável disponível.")
+
         # Valida os dados do produtor
-        validar_dados(produtor.to_dict())
+        valida_dados(produtor.to_dict())
         
         # Adiciona o produtor ao banco de dados e confirma a transação
         db.session.add(produtor)
         db.session.commit()
-        return jsonify({"message": "Cadastro realizado com sucesso", "data": produtor.to_dict()}), 200
+        return jsonify({"status": True, "message": "Cadastro realizado com sucesso", "data": produtor.to_dict()}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"status": False, "message": str(e)}), 400
 
 @produtor_bp.route('/<int:id>', methods=['PUT'])
 def atualizar(id):
@@ -89,14 +95,20 @@ def atualizar(id):
             if cultura_nome not in culturas_atualizadas:
                 db.session.delete(culturas_existentes[cultura_nome])
         
+        # Verifica se a soma das áreas das culturas não excede a área agricultável
+        area_total_culturas = sum(cultura_data['area'] for cultura_data in data['culturas'])
+
+        if area_total_culturas > data['area_agricultavel']:
+            raise ValueError("A soma das áreas das culturas não pode exceder a área agricultável disponível.")
+
         # Valida os dados atualizados do produtor
-        validar_dados(produtor.to_dict())
+        valida_dados(produtor.to_dict())
         
         # Confirma as alterações no banco de dados
         db.session.commit()
-        return jsonify({"message": "Atualização realizada com sucesso", "data": produtor.to_dict()}), 200
+        return jsonify({"status": True, "message": "Atualização realizada com sucesso", "data": produtor.to_dict()}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"status": False, "message": str(e)}), 400
 
 @produtor_bp.route('/', methods=['GET'])
 def buscar():
@@ -106,9 +118,9 @@ def buscar():
     try:
         # Recupera todos os produtores
         produtores = Produtor.query.all()
-        return jsonify({"message": "Busca realizada com sucesso", "data": [produtor.to_dict() for produtor in produtores]}), 200
+        return jsonify({"status": True, "message": "Busca realizada com sucesso", "data": [produtor.to_dict() for produtor in produtores]}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"status": False, "message": str(e)}), 400
 
 @produtor_bp.route('/<int:id>', methods=['GET'])
 def buscar_id(id):
@@ -118,9 +130,9 @@ def buscar_id(id):
     try:
         # Recupera o produtor pelo ID, ou retorna 404 se não encontrado
         produtor = Produtor.query.get_or_404(id)
-        return jsonify({"message": "Busca realizada com sucesso", "data": produtor.to_dict()}), 200
+        return jsonify({"status": True, "message": "Busca realizada com sucesso", "data": produtor.to_dict()}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"status": False, "message": str(e)}), 400
 
 @produtor_bp.route('/<int:id>', methods=['DELETE'])
 def excluir(id):
@@ -135,6 +147,6 @@ def excluir(id):
         db.session.delete(produtor)
         db.session.commit()
         
-        return jsonify({"message": "Produtor excluído com sucesso"}), 200
+        return jsonify({"status": True, "message": "Produtor excluído com sucesso"}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"status": False, "message": str(e)}), 400

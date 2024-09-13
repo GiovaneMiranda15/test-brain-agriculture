@@ -1,6 +1,6 @@
 import re
 
-def format_string(s: str) -> str:
+def formatar_string(s: str) -> str:
     """
     Converte uma string para maiúsculas e remove caracteres especiais.
 
@@ -18,7 +18,7 @@ def format_string(s: str) -> str:
 
 import re
 
-def format_cpf_cnpj(s: str) -> str:
+def formatar_cpf_cnpj(s: str) -> str:
     """
     Remove todos os caracteres não numéricos de um CPF ou CNPJ, mantendo apenas os números.
 

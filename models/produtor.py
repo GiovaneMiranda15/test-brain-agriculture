@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from utils.format import format_cpf_cnpj, format_string
+from utils.format import formatar_cpf_cnpj, formatar_string
 
 # Instância do SQLAlchemy
 db = SQLAlchemy()
@@ -26,11 +26,11 @@ class Produtor(db.Model):
         """
         return {
             "id": self.id,
-            "cpf_cnpj": format_cpf_cnpj(self.cpf_cnpj),
-            "nome_produtor": format_string(self.nome_produtor),
-            "nome_fazenda": format_string(self.nome_fazenda),
-            "cidade": format_string(self.cidade),
-            "estado": format_string(self.estado),
+            "cpf_cnpj": formatar_cpf_cnpj(self.cpf_cnpj),
+            "nome_produtor": formatar_string(self.nome_produtor),
+            "nome_fazenda": formatar_string(self.nome_fazenda),
+            "cidade": formatar_string(self.cidade),
+            "estado": formatar_string(self.estado),
             "area_total": float(self.area_total),
             "area_agricultavel": float(self.area_agricultavel),
             "area_vegetacao": float(self.area_vegetacao),
@@ -44,11 +44,11 @@ class Produtor(db.Model):
         Args:
             data (dict): Dados para atualizar o produtor.
         """
-        self.cpf_cnpj = format_cpf_cnpj(data['cpf_cnpj'])
-        self.nome_produtor = format_string(data['nome_produtor'])
-        self.nome_fazenda = format_string(data['nome_fazenda'])
-        self.cidade = format_string(data['cidade'])
-        self.estado = format_string(data['estado'])
+        self.cpf_cnpj = formatar_cpf_cnpj(data['cpf_cnpj'])
+        self.nome_produtor = formatar_string(data['nome_produtor'])
+        self.nome_fazenda = formatar_string(data['nome_fazenda'])
+        self.cidade = formatar_string(data['cidade'])
+        self.estado = formatar_string(data['estado'])
         self.area_total = data['area_total']
         self.area_agricultavel = data['area_agricultavel']
         self.area_vegetacao = data['area_vegetacao']
@@ -70,7 +70,7 @@ class Cultura(db.Model):
         return {
             "id": self.id,
             "produtor_id": self.produtor_id,
-            "cultura": format_string(self.cultura),
+            "cultura": formatar_string(self.cultura),
             "area": float(self.area)
         }
     
@@ -81,5 +81,5 @@ class Cultura(db.Model):
         Args:
             data (dict): Dados para atualizar a cultura.
         """
-        self.cultura = format_string(data['cultura'])
+        self.cultura = formatar_string(data['cultura'])
         self.area = data['area']

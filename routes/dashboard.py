@@ -39,14 +39,16 @@ def dashboard():
         }
 
         # Retorna os dados do dashboard em formato JSON
-        return jsonify({
-            "total_fazendas": total_fazendas,
-            "total_area": float(total_area),
-            "estados": estados_dict,
-            "culturas": culturas_dict,
-            "uso_solo": uso_solo
+        return jsonify({"status": True,
+            "data": {
+                "total_fazendas": total_fazendas,
+                "total_area": float(total_area),
+                "estados": estados_dict,
+                "culturas": culturas_dict,
+                "uso_solo": uso_solo
+            }
         }), 200
 
     except Exception as e:
         # Em caso de erro, retorna a mensagem de erro
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"status": False, "message": str(e)}), 400
